@@ -12,7 +12,7 @@ import ru.practicum.model.EndpointHit;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
 @SpringBootTest
@@ -49,10 +49,4 @@ class StatsServiceImplTest {
         assertEquals(statInConsoleDto1, statInConsoleDto2);
     }
 
-    @Test
-    @DisplayName("Маппинг в StatInConsoleDto")
-    void testMappingInStatInConsoleDto() {
-        StatInConsoleDto statInConsoleDto = statsMapperMapStruct.inStatInConsoleDtoFromEndpointHit(endpointHit);
-        assertEquals(statInConsoleDto1, statInConsoleDto);
-    }
 }

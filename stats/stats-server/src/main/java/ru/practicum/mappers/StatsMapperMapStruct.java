@@ -20,9 +20,6 @@ public interface StatsMapperMapStruct {
     @Mapping(target = "id", ignore = true)
     EndpointHit inEndpointHit(StatFromConsoleDto statFromConsoleDto);
 
-    @Mapping(target = "hits", expression = "java(0)")
-    StatInConsoleDto inStatInConsoleDtoFromEndpointHit(EndpointHit endpointHit);
-
     @Mapping(target = "app", expression = "java(endpointHitShort.getApp())")
     @Mapping(target = "uri", expression = "java(endpointHitShort.getUri())")
     @Mapping(target = "hits", expression = "java(endpointHitShort.getHits())")
