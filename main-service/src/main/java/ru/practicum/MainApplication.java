@@ -12,7 +12,7 @@ public class MainApplication {
 //        statFromConsoleDto.setApp("App");
 //        statFromConsoleDto.setIp("Ip");
 //        statFromConsoleDto.setUri("Uri");
-//        statFromConsoleDto.setTimestamp("2022-09-06 11:00:23");
+//        statFromConsoleDto.setTimestamp(LocalDateTime.now());
 //        LocalDateTime start = LocalDateTime.now().minusYears(4);
 //        LocalDateTime end = LocalDateTime.now().plusYears(6);
 //        List<String> uris = List.of("/events/5", "/events/1", "/events/2", "Uri");
@@ -30,5 +30,6 @@ public class MainApplication {
 //                System.out.println(get);
 //            }
 //        } while (!text.equals("exit"));
+//    }
     }
 }

@@ -9,14 +9,10 @@ import ru.practicum.StatInConsoleDto;
 import ru.practicum.model.EndpointHit;
 import ru.practicum.model.EndpointHitShort;
 
-import java.time.Instant;
-
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {StatsMapperMapStructUtil.class}, imports = {
-        Instant.class
-})
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface StatsMapperMapStruct {
-    @Mapping(target = "timestamp", qualifiedByName = {"StatsMapperMapStructUtil", "inLocalDateTime"}, source = "statFromConsoleDto")
+
     @Mapping(target = "id", ignore = true)
     EndpointHit inEndpointHit(StatFromConsoleDto statFromConsoleDto);
 

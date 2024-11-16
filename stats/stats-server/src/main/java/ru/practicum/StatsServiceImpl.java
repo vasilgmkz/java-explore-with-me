@@ -7,7 +7,6 @@ import ru.practicum.model.EndpointHit;
 import ru.practicum.model.EndpointHitShort;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -23,9 +22,7 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public List<StatInConsoleDto> getStats(String start, String end, List<String> uris, boolean unique) {
-        LocalDateTime startDateTime = inLocalDateTime(start);
-        LocalDateTime endDateTime = inLocalDateTime(end);
+    public List<StatInConsoleDto> getStats(LocalDateTime startDateTime, LocalDateTime endDateTime, List<String> uris, boolean unique) {
         if (uris == null || uris.isEmpty()) {
             List<EndpointHitShort> endpointHitsShort;
             if (!unique) {
@@ -43,11 +40,6 @@ public class StatsServiceImpl implements StatsService {
             }
             return statInConsoleDtoList(endpointHitsShort);
         }
-    }
-
-    private LocalDateTime inLocalDateTime(String ldt) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return LocalDateTime.parse(ldt, formatter);
     }
 
     private List<StatInConsoleDto> statInConsoleDtoList(List<EndpointHitShort> endpointHitsShort) {
