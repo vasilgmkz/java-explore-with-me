@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.admin.categories.model.CategoryDto;
-import ru.practicum.pablic.categories.PublicCategoriesService;
 
 import java.util.List;
 
