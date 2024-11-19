@@ -2,6 +2,7 @@ package ru.practicum.pablic;
 
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class PublicController {
-    private final PublicCategoriesService publicCategoriesService;
+
+    @Qualifier("publicCategoriesService")
+    private final PublicService publicCategoriesService;
 
     @GetMapping("/categories")
     @ResponseStatus(HttpStatus.OK)

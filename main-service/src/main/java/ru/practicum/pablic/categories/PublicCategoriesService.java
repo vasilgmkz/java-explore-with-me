@@ -8,7 +8,7 @@ import ru.practicum.pablic.PublicService;
 
 import java.util.List;
 
-@Service
+@Service ("publicCategoriesService")
 @RequiredArgsConstructor
 public class PublicCategoriesService implements PublicService {
     private final PublicCategoriesRepository publicCategoriesRepository;

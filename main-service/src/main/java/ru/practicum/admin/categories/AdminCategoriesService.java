@@ -8,7 +8,7 @@ import ru.practicum.admin.categories.mapper.CategoryMapperMapStruct;
 import ru.practicum.admin.categories.model.CategoryDto;
 import ru.practicum.exeption.NotFoundException;
 
-@Service
+@Service("adminCategoriesService")
 @RequiredArgsConstructor
 public class AdminCategoriesService implements AdminService {
     private final AdminCategoriesRepository adminCategoriesRepository;
@@ -25,7 +25,7 @@ public class AdminCategoriesService implements AdminService {
     //TODO *РЕАЛИЗОВАТЬ* Обратите внимание: с категорией не должно быть связано ни одного события! 409 Существуют события, связанные с категорией
     @Override
     public void deleteCategory(Long catId) {
-        CategoryDto categoryDto = adminCategoriesRepository.findById(catId)
+        adminCategoriesRepository.findById(catId)
                 .orElseThrow(() -> new NotFoundException(String.format("Category with id=%d was not found", catId)));
         adminCategoriesRepository.deleteById(catId);
     }
