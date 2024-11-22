@@ -54,7 +54,7 @@ public class AdminEventsService implements AdminService {
         comparisonMethod(eventDto, eventDtoUpdate);
         adminEventsRepository.save(eventDto);
         EventFullDto eventFullDto = eventMapperMapStruct.inEventFullDtoFromEventDto(eventDto);
-        return converter.addConfirmedRequestsAndViews(List.of(eventFullDto)).getFirst();
+        return converter.addConfirmedRequestsAndViewsInEventFullDto(List.of(eventFullDto)).getFirst();
     }
 
     @Override
@@ -73,7 +73,7 @@ public class AdminEventsService implements AdminService {
             return new ArrayList<>();
         }
         List<EventFullDto> eventFullDtos = eventDtos.stream().map(eventMapperMapStruct::inEventFullDtoFromEventDto).toList();
-        return converter.addConfirmedRequestsAndViews(eventFullDtos);
+        return converter.addConfirmedRequestsAndViewsInEventFullDto(eventFullDtos);
     }
 
     private void comparisonMethod(EventDto eventDto, EventDto eventDtoUpdate) {

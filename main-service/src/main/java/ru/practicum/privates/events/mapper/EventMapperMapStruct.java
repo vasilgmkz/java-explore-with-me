@@ -4,10 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
-import ru.practicum.privates.events.dto.EventFullDto;
-import ru.practicum.privates.events.dto.NewEventDto;
-import ru.practicum.privates.events.dto.UpdateEventAdminRequest;
-import ru.practicum.privates.events.dto.UpdateEventUserRequest;
+import ru.practicum.privates.events.dto.*;
 import ru.practicum.privates.events.model.EventDto;
 import ru.practicum.privates.events.model.State;
 
@@ -36,4 +33,9 @@ public interface EventMapperMapStruct {
 
     @Mapping(target = "category", qualifiedByName = {"EventMapperMapStructUtil", "getCategoryUpdateEventAdminRequest"}, source = "updateEventAdminRequest")
     EventDto inEventDtoFromUpdateEventAdminRequest(UpdateEventAdminRequest updateEventAdminRequest);
+
+    @Mapping(target = "confirmedRequests", expression = "java(0)")
+    @Mapping(target = "views", expression = "java(0)")
+    @Mapping(target = "initiator", qualifiedByName = {"EventMapperMapStructUtil", "getShortUser"}, source = "eventDto")
+    EventShortDto inEventShortDtoFromEventDto(EventDto eventDto);
 }

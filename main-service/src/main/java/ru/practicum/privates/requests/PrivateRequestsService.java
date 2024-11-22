@@ -77,4 +77,15 @@ public class PrivateRequestsService implements PrivateService {
         List<ParticipationRequest> participationRequests = privateRequestsRepository.getRequests(userId);
         return participationRequests.stream().map(requestMapperMapStruct::inParticipationRequestDtoFromParticipationRequest).toList();
     }
+
+    @Override
+    public List<ParticipationRequestDto> getRequestsByUserIdAndEventId(Long userId, Long eventId) {
+        EventDto eventDto = privateEventsRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException(String.format("Event with id=%d was not found", eventId)));
+        if (!eventDto.getInitiator().getId().equals(userId.intValue())) {
+            throw new EditingConditionsException("Only the event owner can view it", Status.FORBIDDEN);
+        }
+        List<ParticipationRequest> participationRequests = privateRequestsRepository.getRequestsByUserIdAndEventId(eventId);
+        return participationRequests.stream().map(requestMapperMapStruct::inParticipationRequestDtoFromParticipationRequest).toList();
+    }
 }

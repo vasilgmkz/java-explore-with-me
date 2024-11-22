@@ -1,6 +1,7 @@
 package ru.practicum.privates;
 
 import ru.practicum.privates.events.dto.EventFullDto;
+import ru.practicum.privates.events.dto.EventShortDto;
 import ru.practicum.privates.events.dto.NewEventDto;
 import ru.practicum.privates.events.dto.UpdateEventUserRequest;
 import ru.practicum.privates.requests.dto.ParticipationRequestDto;
@@ -25,6 +26,18 @@ public interface PrivateService {
     }
 
     default List<ParticipationRequestDto> getRequests(Long userId) {
+        return null;
+    }
+
+    default List<EventShortDto> getEventsByUserId(Long userId, Long from, Long size) {
+        return null;
+    }
+
+    default EventFullDto getEventByUserIdAndEventId(Long userId, Long eventId) {
+        return null;
+    }
+
+    default List<ParticipationRequestDto> getRequestsByUserIdAndEventId(Long userId, Long eventId) {
         return null;
     }
 }

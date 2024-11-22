@@ -20,4 +20,7 @@ public interface PrivateRequestsRepository extends JpaRepository<ParticipationRe
 
     @Query(value = "select event_id as eventId, count(*) from requests where request_status = 'CONFIRMED' group by event_id", nativeQuery = true)
     List<CountConfirmedRequest> getCountConfirmedRequest();
+
+    @Query(value = "select * from requests where event_id = :eventId order by request_created DESC", nativeQuery = true)
+    List<ParticipationRequest> getRequestsByUserIdAndEventId(@Param("eventId") Long eventId);
 }
