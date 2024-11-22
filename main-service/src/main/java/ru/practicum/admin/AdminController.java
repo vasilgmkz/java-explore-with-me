@@ -16,7 +16,6 @@ import ru.practicum.admin.users.dto.UserShortDtoFromConsole;
 import ru.practicum.admin.users.model.UserDto;
 import ru.practicum.privates.events.dto.EventFullDto;
 import ru.practicum.privates.events.dto.UpdateEventAdminRequest;
-import ru.practicum.privates.events.model.State;
 
 import java.time.LocalDateTime;
 import java.util.List;

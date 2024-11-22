@@ -1,14 +1,18 @@
 package ru.practicum.privates.events.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import jdk.jfr.BooleanFlag;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import ru.practicum.privates.events.model.Location;
-import ru.practicum.privates.events.model.State;
 import ru.practicum.privates.events.model.StateAction;
 import ru.practicum.privates.events.validate.CheckEventDate;
 
