@@ -4,7 +4,11 @@ import ru.practicum.admin.categories.dto.NewCategoryDto;
 import ru.practicum.admin.categories.model.CategoryDto;
 import ru.practicum.admin.users.dto.UserShortDtoFromConsole;
 import ru.practicum.admin.users.model.UserDto;
+import ru.practicum.privates.events.dto.EventFullDto;
+import ru.practicum.privates.events.dto.UpdateEventAdminRequest;
+import ru.practicum.privates.events.model.State;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AdminService {
@@ -30,5 +34,13 @@ public interface AdminService {
 
     default void deleteUser(Long userId) {
 
+    }
+
+    default EventFullDto updateEvent(UpdateEventAdminRequest updateEventAdminRequest, Long eventId) {
+        return null;
+    }
+
+    default List<EventFullDto> getEvents(List<Integer> users, List<String> states, List<Integer> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
+        return null;
     }
 }

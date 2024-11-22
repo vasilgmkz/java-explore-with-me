@@ -6,13 +6,17 @@ import ru.practicum.admin.AdminService;
 import ru.practicum.admin.categories.dto.NewCategoryDto;
 import ru.practicum.admin.categories.mapper.CategoryMapperMapStruct;
 import ru.practicum.admin.categories.model.CategoryDto;
+import ru.practicum.exeption.EditingConditionsException;
 import ru.practicum.exeption.NotFoundException;
+import ru.practicum.exeption.Status;
+import ru.practicum.privates.events.PrivateEventsRepository;
 
 @Service("adminCategoriesService")
 @RequiredArgsConstructor
 public class AdminCategoriesService implements AdminService {
     private final AdminCategoriesRepository adminCategoriesRepository;
     private final CategoryMapperMapStruct categoryMapperMapStruct;
+    private final PrivateEventsRepository privateEventsRepository;
 
     @Override
     public CategoryDto addCategory(NewCategoryDto newCategoryDto) {
@@ -27,6 +31,10 @@ public class AdminCategoriesService implements AdminService {
     public void deleteCategory(Long catId) {
         adminCategoriesRepository.findById(catId)
                 .orElseThrow(() -> new NotFoundException(String.format("Category with id=%d was not found", catId)));
+        Long count = privateEventsRepository.countByCategoryId(catId);
+        if (count != 0) {
+            throw new EditingConditionsException("The category is not empty", Status.CONFLICT);
+        }
         adminCategoriesRepository.deleteById(catId);
     }
 

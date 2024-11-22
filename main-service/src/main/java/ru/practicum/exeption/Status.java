@@ -4,5 +4,6 @@ public enum Status {
     BAD_REQUEST,
     INTERNAL_SERVER_ERROR,
     CONFLICT,
-    NOT_FOUND
+    NOT_FOUND,
+    FORBIDDEN
 }
