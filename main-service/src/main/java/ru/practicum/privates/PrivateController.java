@@ -12,6 +12,8 @@ import ru.practicum.privates.events.dto.EventFullDto;
 import ru.practicum.privates.events.dto.EventShortDto;
 import ru.practicum.privates.events.dto.NewEventDto;
 import ru.practicum.privates.events.dto.UpdateEventUserRequest;
+import ru.practicum.privates.requests.dto.EventRequestStatusUpdateRequest;
+import ru.practicum.privates.requests.dto.EventRequestStatusUpdateResult;
 import ru.practicum.privates.requests.dto.ParticipationRequestDto;
 
 import java.util.List;
@@ -82,6 +84,14 @@ public class PrivateController {
     public List<ParticipationRequestDto> getRequestsByUserIdAndEventId(@PathVariable(name = "userId") @Valid @Positive Long userId,
                                                                        @PathVariable(name = "eventId") @Valid @Positive Long eventId) {
         return privateRequestsService.getRequestsByUserIdAndEventId(userId, eventId);
+    }
+
+    @PatchMapping("/users/{userId}/events/{eventId}/requests")
+    @ResponseStatus(HttpStatus.OK)
+    public EventRequestStatusUpdateResult updateRequests(@RequestBody @Valid EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest,
+                                                         @PathVariable(name = "userId") @Valid @Positive Long userId,
+                                                         @PathVariable(name = "eventId") @Valid @Positive Long eventId) {
+        return privateRequestsService.updateRequests(eventRequestStatusUpdateRequest, userId, eventId);
     }
 
 }

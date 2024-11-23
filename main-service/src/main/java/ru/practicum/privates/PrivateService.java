@@ -4,6 +4,8 @@ import ru.practicum.privates.events.dto.EventFullDto;
 import ru.practicum.privates.events.dto.EventShortDto;
 import ru.practicum.privates.events.dto.NewEventDto;
 import ru.practicum.privates.events.dto.UpdateEventUserRequest;
+import ru.practicum.privates.requests.dto.EventRequestStatusUpdateRequest;
+import ru.practicum.privates.requests.dto.EventRequestStatusUpdateResult;
 import ru.practicum.privates.requests.dto.ParticipationRequestDto;
 
 import java.util.List;
@@ -38,6 +40,10 @@ public interface PrivateService {
     }
 
     default List<ParticipationRequestDto> getRequestsByUserIdAndEventId(Long userId, Long eventId) {
+        return null;
+    }
+
+    default EventRequestStatusUpdateResult updateRequests(EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest, Long userId, Long eventId) {
         return null;
     }
 }
