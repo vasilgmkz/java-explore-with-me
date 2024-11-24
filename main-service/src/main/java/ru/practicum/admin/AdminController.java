@@ -12,6 +12,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.admin.categories.dto.NewCategoryDto;
 import ru.practicum.admin.categories.model.CategoryDto;
+import ru.practicum.admin.compilations.dto.CompilationDto;
+import ru.practicum.admin.compilations.dto.CompilationDtoFromConsole;
+import ru.practicum.admin.compilations.validate.Marker;
 import ru.practicum.admin.users.dto.UserShortDtoFromConsole;
 import ru.practicum.admin.users.model.UserDto;
 import ru.practicum.privates.events.dto.EventFullDto;
@@ -34,6 +37,9 @@ public class AdminController {
 
     @Qualifier("adminEventsService")
     private final AdminService adminEventsService;
+
+    @Qualifier("adminCompilationsService")
+    private final AdminService adminCompilationsService;
 
     @PostMapping("/categories")
     @ResponseStatus(HttpStatus.CREATED)
@@ -91,5 +97,24 @@ public class AdminController {
                                         @RequestParam(name = "size", defaultValue = "10") Integer size) {
         return adminEventsService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
+
+    @PostMapping("/compilations")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CompilationDto addCompilation(@RequestBody @Validated({Marker.AddCompilation.class, Marker.UpdateCompilation.class}) CompilationDtoFromConsole compilationDtoFromConsole) {
+        return adminCompilationsService.addCompilation(compilationDtoFromConsole);
+    }
+
+    @DeleteMapping("/compilations/{compId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCompilation(@PathVariable("compId") @Valid @Positive Long compId) {
+        adminCompilationsService.deleteCompilation(compId);
+    }
+
+    @PatchMapping("/compilations/{compId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CompilationDto updateCompilation(@PathVariable("compId") @Valid @Positive Long compId, @RequestBody @Validated({Marker.UpdateCompilation.class}) CompilationDtoFromConsole compilationDtoFromConsole) {
+        return adminCompilationsService.updateCompilation(compilationDtoFromConsole, compId);
+    }
+
 }
 

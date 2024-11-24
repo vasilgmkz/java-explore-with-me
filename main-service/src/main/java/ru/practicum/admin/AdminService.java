@@ -2,6 +2,8 @@ package ru.practicum.admin;
 
 import ru.practicum.admin.categories.dto.NewCategoryDto;
 import ru.practicum.admin.categories.model.CategoryDto;
+import ru.practicum.admin.compilations.dto.CompilationDto;
+import ru.practicum.admin.compilations.dto.CompilationDtoFromConsole;
 import ru.practicum.admin.users.dto.UserShortDtoFromConsole;
 import ru.practicum.admin.users.model.UserDto;
 import ru.practicum.privates.events.dto.EventFullDto;
@@ -40,6 +42,17 @@ public interface AdminService {
     }
 
     default List<EventFullDto> getEvents(List<Integer> users, List<String> states, List<Integer> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
+        return null;
+    }
+
+    default CompilationDto addCompilation(CompilationDtoFromConsole compilationDtoFromConsole) {
+        return null;
+    }
+
+    default void deleteCompilation(Long compId) {
+    }
+
+    default CompilationDto updateCompilation(CompilationDtoFromConsole compilationDtoFromConsole, Long compId) {
         return null;
     }
 }

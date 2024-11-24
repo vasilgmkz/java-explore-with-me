@@ -7,6 +7,7 @@ import ru.practicum.privates.events.model.EventDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public interface AdminEventsRepository extends JpaRepository<EventDto, Long> {
 
@@ -23,4 +24,8 @@ public interface AdminEventsRepository extends JpaRepository<EventDto, Long> {
                                   @Param("from") Integer from,
                                   @Param("size") Integer size
     );
+
+
+    @Query(value = "select * from events where event_id in (:events)", nativeQuery = true)
+    List<EventDto> getEventsForCompilation(@Param("events") Set<Integer> events);
 }
