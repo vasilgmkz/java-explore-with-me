@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.StatInConsoleDto;
 import ru.practicum.StatsClient;
+import ru.practicum.admin.compilations.dto.CompilationDto;
 import ru.practicum.privates.events.dto.EventFullDto;
 import ru.practicum.privates.events.dto.EventShortDto;
 import ru.practicum.privates.requests.PrivateRequestsRepository;
 import ru.practicum.privates.requests.model.CountConfirmedRequest;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,5 +75,37 @@ public class Converter {
             eventShortDto.setViews(statInConsoleDtosMap.getOrDefault(eventShortDto.getId(), 0));
         }
         return eventShortDtos;
+    }
+
+    public List<CompilationDto> addConfirmedRequestsAndViewsInCompilationDtoList(List<CompilationDto> compilationDtoList) {
+        // Добавление подтвержденных запросов
+        List<CountConfirmedRequest> countConfirmedRequestList = privateRequestsRepository.getCountConfirmedRequest();
+        Map<Integer, Integer> countConfirmedRequestMap = new HashMap<>();
+        for (CountConfirmedRequest a : countConfirmedRequestList) {
+            countConfirmedRequestMap.put(a.getEventId(), a.getCount());
+        }
+        for (CompilationDto compilationDto : compilationDtoList) {
+            for (EventShortDto eventShortDto : compilationDto.getEvents()) {
+                Integer confirmedRequests = countConfirmedRequestMap.getOrDefault(eventShortDto.getId(), 0);
+                eventShortDto.setConfirmedRequests(confirmedRequests);
+            }
+        }
+        List<String> eventShortDtosId = new ArrayList<>();
+        for (CompilationDto compilationDto : compilationDtoList) {
+            eventShortDtosId.addAll(compilationDto.getEvents().stream().map(EventShortDto::getId).map(Object::toString).map(x -> "/events/" + x).toList());
+        }
+        List<StatInConsoleDto> statInConsoleDtosList = statsClient.getStats(LocalDateTime.now().minusYears(100), LocalDateTime.now().plusYears(100), eventShortDtosId, false);
+        Map<Integer, Integer> statInConsoleDtosMap = new HashMap<>();
+        for (StatInConsoleDto statInConsoleDto : statInConsoleDtosList) {
+            String numberString = statInConsoleDto.getUri().replace("/events/", "");
+            Integer numberInteger = Integer.parseInt(numberString);
+            statInConsoleDtosMap.put(numberInteger, statInConsoleDto.getHits());
+        }
+        for (CompilationDto compilationDto : compilationDtoList) {
+            for (EventShortDto eventShortDto : compilationDto.getEvents()) {
+                eventShortDto.setViews(statInConsoleDtosMap.getOrDefault(eventShortDto.getId(), 0));
+            }
+        }
+        return compilationDtoList;
     }
 }
