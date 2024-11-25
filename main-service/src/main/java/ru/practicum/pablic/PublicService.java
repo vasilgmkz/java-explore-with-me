@@ -25,11 +25,11 @@ public interface PublicService {
         return null;
     }
 
-    default List<EventShortDto> getEvents(String text, List<Integer> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, Long from, Long size) {
+    default List<EventShortDto> getEvents(String text, List<Integer> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, Long from, Long size, String ip, String uri) {
         return null;
     }
 
-    default EventFullDto getEventsById(Long id) {
+    default EventFullDto getEventsById(Long id, String ip, String uri) {
         return null;
     }
 }

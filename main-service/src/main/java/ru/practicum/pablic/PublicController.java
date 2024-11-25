@@ -1,10 +1,12 @@
 package ru.practicum.pablic;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Validated
+@Slf4j
 public class PublicController {
 
     @Qualifier("publicCategoriesService")
@@ -68,13 +71,18 @@ public class PublicController {
                                          @RequestParam(defaultValue = "false", name = "onlyAvailable") Boolean onlyAvailable,
                                          @RequestParam(required = false, name = "sort") String sort,
                                          @RequestParam(name = "from", defaultValue = "0") @Valid @PositiveOrZero Long from,
-                                         @RequestParam(name = "size", defaultValue = "10") @Valid @PositiveOrZero Long size) {
-        return publicEventsService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
+                                         @RequestParam(name = "size", defaultValue = "10") @Valid @PositiveOrZero Long size,
+                                         HttpServletRequest request) {
+        log.info("client ip: {}", request.getRemoteAddr());
+        log.info("endpoint path: {}", request.getRequestURI());
+        return publicEventsService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request.getRemoteAddr(), request.getRequestURI());
     }
 
     @GetMapping("/events/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto getEventsById(@PathVariable("id") @Valid @Positive Long id) {
-        return publicEventsService.getEventsById(id);
+    public EventFullDto getEventsById(@PathVariable("id") @Valid @Positive Long id, HttpServletRequest request) {
+        log.info("client ip: {}", request.getRemoteAddr());
+        log.info("endpoint path: {}", request.getRequestURI());
+        return publicEventsService.getEventsById(id, request.getRemoteAddr(), request.getRequestURI());
     }
 }

@@ -2,6 +2,8 @@ package ru.practicum.pablic.events;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.StatFromConsoleDto;
+import ru.practicum.StatsClient;
 import ru.practicum.converter.Converter;
 import ru.practicum.exeption.EditingConditionsException;
 import ru.practicum.exeption.NotFoundException;
@@ -22,9 +24,14 @@ public class PublicEventsService implements PublicService {
     private final PublicEventsRepository publicEventsRepository;
     private final EventMapperMapStruct eventMapperMapStruct;
     private final Converter converter;
+    private final StatsClient statsClient;
 
     @Override
-    public List<EventShortDto> getEvents(String text, List<Integer> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, Long from, Long size) {
+    public List<EventShortDto> getEvents(String text, List<Integer> categories,
+                                         Boolean paid, LocalDateTime rangeStart,
+                                         LocalDateTime rangeEnd, Boolean onlyAvailable,
+                                         String sort, Long from,
+                                         Long size, String ip, String uri) {
         if (categories == null || categories.size() == 1 && categories.getFirst().equals(0)) {
             categories = new ArrayList<>();
         }
@@ -33,6 +40,7 @@ public class PublicEventsService implements PublicService {
             rangeEnd = LocalDateTime.now().plusYears(100);
         }
         List<EventDto> eventDtoList = publicEventsRepository.getEvents(text, categories, paid, rangeStart, rangeEnd, from, size);
+        statFromConsoleDto(ip, uri);
         if (eventDtoList.isEmpty()) {
             return new ArrayList<>();
         }
@@ -67,13 +75,23 @@ public class PublicEventsService implements PublicService {
     }
 
     @Override
-    public EventFullDto getEventsById(Long id) {
+    public EventFullDto getEventsById(Long id, String ip, String uri) {
         EventDto eventDto = publicEventsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Event with id=%d was not found", id)));
         if (!eventDto.getState().equals(State.PUBLISHED)) {
             throw new EditingConditionsException("The event must have the state: PUBLISHED", Status.FORBIDDEN);
         }
         EventFullDto eventFullDto = eventMapperMapStruct.inEventFullDtoFromEventDto(eventDto);
+        statFromConsoleDto(ip, uri);
         return converter.addConfirmedRequestsAndViewsInEventFullDto(List.of(eventFullDto)).getFirst();
+    }
+
+    private void statFromConsoleDto(String ip, String uri) {
+        StatFromConsoleDto statFromConsoleDto = new StatFromConsoleDto();
+        statFromConsoleDto.setApp("ewm-main-service");
+        statFromConsoleDto.setIp(ip);
+        statFromConsoleDto.setUri(uri);
+        statFromConsoleDto.setTimestamp(LocalDateTime.now());
+        statsClient.addHit(statFromConsoleDto);
     }
 }
