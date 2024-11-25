@@ -34,22 +34,22 @@ public class ErrorHandler {
         }
     }
 
-    @ExceptionHandler (value = {MethodArgumentTypeMismatchException.class})
+    @ExceptionHandler(value = {jakarta.validation.ConstraintViolationException.class, ConstraintViolationException.class})
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError argumentNotValidException(Exception e) {
+        log.info("409 {}", e.getMessage());
+        String reason = "Integrity constraint has been violated.";
+        String message = e.getLocalizedMessage();
+        return new ApiError(reason, message, Status.CONFLICT);
+    }
+
+    @ExceptionHandler (value = {MethodArgumentTypeMismatchException.class, BadRequest.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError defaultHandlerExceptionResolver(Exception e) {
         log.info("400 {}", e.getMessage());
         String reason = "Incorrectly made request.";
         String message = e.getMessage();
         return new ApiError(reason, message, Status.BAD_REQUEST);
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiError argumentNotValidException(final ConstraintViolationException e) {
-        log.info("409 {}", e.getMessage());
-        String reason = "Integrity constraint has been violated.";
-        String message = e.getSQLException().getLocalizedMessage();
-        return new ApiError(reason, message, Status.CONFLICT);
     }
 
     @ExceptionHandler

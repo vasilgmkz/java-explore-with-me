@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.admin.AdminService;
 import ru.practicum.converter.Converter;
+import ru.practicum.exeption.BadRequest;
 import ru.practicum.exeption.EditingConditionsException;
 import ru.practicum.exeption.NotFoundException;
 import ru.practicum.exeption.Status;
@@ -35,8 +36,8 @@ public class AdminEventsService implements AdminService {
             if (eventDto.getState().equals(State.PENDING)) {
                 eventDto.setState(State.PUBLISHED);
                 eventDto.setPublishedOn(LocalDateTime.now());
-                if (!eventDto.getEventDate().minusHours(1).isAfter(eventDto.getPublishedOn())) {
-                    throw new EditingConditionsException("The start date of the events to be changed must be no earlier than one hour from the publication date.", Status.FORBIDDEN);
+                if (!eventDto.getEventDate().minusHours(1).isAfter(eventDto.getPublishedOn()) && updateEventAdminRequest.getEventDate() == null) {
+                    throw new BadRequest("The start date of the events to be changed must be no earlier than one hour from the publication date.");
                 }
             } else {
                 throw new EditingConditionsException("Cannot publish the event because it's not in the right state: PUBLISHED or CANCELED", Status.FORBIDDEN);
@@ -90,7 +91,7 @@ public class AdminEventsService implements AdminService {
 
             if (eventDto.getPublishedOn() != null) {
                 if (!eventDtoUpdate.getEventDate().minusHours(1).isAfter(eventDto.getPublishedOn())) {
-                    throw new EditingConditionsException("The start date of the events to be changed must be no earlier than one hour from the publication date.", Status.FORBIDDEN);
+                    throw new BadRequest("The start date of the events to be changed must be no earlier than one hour from the publication date.");
                 } else {
                     eventDto.setEventDate(eventDtoUpdate.getEventDate());
                 }
