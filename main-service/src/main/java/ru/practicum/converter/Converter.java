@@ -37,7 +37,7 @@ public class Converter {
 
         // Добавление количества просмотров
         List<String> eventFullDtosId = eventFullDtos.stream().map(EventFullDto::getId).map(Object::toString).map(x -> "/events/" + x).toList();
-        List<StatInConsoleDto> statInConsoleDtosList = statsClient.getStats(LocalDateTime.now().minusYears(100), LocalDateTime.now().plusYears(100), eventFullDtosId, false);
+        List<StatInConsoleDto> statInConsoleDtosList = statsClient.getStats(LocalDateTime.now().minusYears(100), LocalDateTime.now().plusYears(100), eventFullDtosId, true);
         Map<Integer, Integer> statInConsoleDtosMap = new HashMap<>();
         for (StatInConsoleDto statInConsoleDto : statInConsoleDtosList) {
             String numberString = statInConsoleDto.getUri().replace("/events/", "");
@@ -64,7 +64,7 @@ public class Converter {
 
         // Добавление количества просмотров
         List<String> eventShortDtosId = eventShortDtos.stream().map(EventShortDto::getId).map(Object::toString).map(x -> "/events/" + x).toList();
-        List<StatInConsoleDto> statInConsoleDtosList = statsClient.getStats(LocalDateTime.now().minusYears(100), LocalDateTime.now().plusYears(100), eventShortDtosId, false);
+        List<StatInConsoleDto> statInConsoleDtosList = statsClient.getStats(LocalDateTime.now().minusYears(100), LocalDateTime.now().plusYears(100), eventShortDtosId, true);
         Map<Integer, Integer> statInConsoleDtosMap = new HashMap<>();
         for (StatInConsoleDto statInConsoleDto : statInConsoleDtosList) {
             String numberString = statInConsoleDto.getUri().replace("/events/", "");

@@ -20,12 +20,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class NewEventDto {
     @NotEmpty
+    @NotBlank
     @Size(min = 20, max = 2000)
     private String annotation;
     @NotNull
     @Positive
     private Integer category;
     @NotEmpty
+    @NotBlank
     @Size(min = 20, max = 7000)
     private String description;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

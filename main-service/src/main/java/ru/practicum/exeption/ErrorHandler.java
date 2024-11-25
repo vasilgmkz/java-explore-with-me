@@ -17,24 +17,24 @@ public class ErrorHandler {
 
     @ExceptionHandler
     public ResponseEntity<ApiError> argumentNotValidException(final MethodArgumentNotValidException e) {
-        if (e.getBindingResult().getFieldErrors().getFirst().getRejectedValue() == null) {
+        //if (e.getBindingResult().getFieldErrors().getFirst().getRejectedValue() == null) {
             log.info("400 {}", e.getMessage());
             String reason = "Incorrectly made request.";
             String message = "Field: " + e.getFieldError().getField()
                     + ". Error: " + e.getFieldError().getDefaultMessage()
                     + ". Value: " + e.getBindingResult().getFieldErrors().getFirst().getRejectedValue();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiError(reason, message, Status.BAD_REQUEST));
-        } else {
-            log.info("409 {}", e.getMessage());
-            String reason = "For the requested operation the conditions are not met.";
-            String message = "Field: " + e.getFieldError().getField()
-                    + ". Error: " + e.getFieldError().getDefaultMessage()
-                    + ". Value: " + e.getBindingResult().getFieldErrors().getFirst().getRejectedValue();
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiError(reason, message, Status.FORBIDDEN));
-        }
+//        } else {
+//            log.info("409 {}", e.getMessage());
+//            String reason = "For the requested operation the conditions are not met.";
+//            String message = "Field: " + e.getFieldError().getField()
+//                    + ". Error: " + e.getFieldError().getDefaultMessage()
+//                    + ". Value: " + e.getBindingResult().getFieldErrors().getFirst().getRejectedValue();
+//            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiError(reason, message, Status.FORBIDDEN));
+//        }
     }
 
-    @ExceptionHandler(value = {jakarta.validation.ConstraintViolationException.class, ConstraintViolationException.class})
+    @ExceptionHandler(value = {ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError argumentNotValidException(Exception e) {
         log.info("409 {}", e.getMessage());
@@ -43,7 +43,7 @@ public class ErrorHandler {
         return new ApiError(reason, message, Status.CONFLICT);
     }
 
-    @ExceptionHandler (value = {MethodArgumentTypeMismatchException.class, BadRequest.class})
+    @ExceptionHandler (value = {MethodArgumentTypeMismatchException.class, BadRequest.class, jakarta.validation.ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError defaultHandlerExceptionResolver(Exception e) {
         log.info("400 {}", e.getMessage());

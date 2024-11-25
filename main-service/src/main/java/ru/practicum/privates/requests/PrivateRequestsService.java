@@ -70,6 +70,7 @@ public class PrivateRequestsService implements PrivateService {
             throw new EditingConditionsException("Only the request owner can cansel it.", Status.FORBIDDEN);
         }
         privateRequestsRepository.deleteById(requestId);
+        participationRequest.setStatus(RequestStatus.CANCELED);
         return requestMapperMapStruct.inParticipationRequestDtoFromParticipationRequest(participationRequest);
     }
 
@@ -117,8 +118,8 @@ public class PrivateRequestsService implements PrivateService {
                     if (!participationRequest.getStatus().equals(RequestStatus.PENDING)) { // статус можно изменить только у заявок, находящихся в состоянии ожидания
                         throw new EditingConditionsException("States request can be PENDING", Status.FORBIDDEN);
                     }
-                    eventRequestStatusUpdateResult.getConfirmedRequests().add(requestMapperMapStruct.inParticipationRequestDtoFromParticipationRequest(participationRequest));
                     participationRequest.setStatus(RequestStatus.CONFIRMED);
+                    eventRequestStatusUpdateResult.getConfirmedRequests().add(requestMapperMapStruct.inParticipationRequestDtoFromParticipationRequest(participationRequest));
                     forSave.add(participationRequest);
                     limitReached++;
                 }
@@ -126,8 +127,8 @@ public class PrivateRequestsService implements PrivateService {
                 if (eventDto.getParticipantLimit() != 0 && limitReached.equals(eventDto.getParticipantLimit())) {
                     for (ParticipationRequest participationRequest : requestList) {
                         if (participationRequest.getStatus().equals(RequestStatus.PENDING)) {
-                            eventRequestStatusUpdateResult.getRejectedRequests().add(requestMapperMapStruct.inParticipationRequestDtoFromParticipationRequest(participationRequest));
                             participationRequest.setStatus(RequestStatus.REJECTED);
+                            eventRequestStatusUpdateResult.getRejectedRequests().add(requestMapperMapStruct.inParticipationRequestDtoFromParticipationRequest(participationRequest));
                             forSave.add(participationRequest);
                         }
                     }
@@ -141,8 +142,8 @@ public class PrivateRequestsService implements PrivateService {
                     if (!participationRequest.getStatus().equals(RequestStatus.PENDING)) { // статус можно изменить только у заявок, находящихся в состоянии ожидания
                         throw new EditingConditionsException("States request can be PENDING", Status.FORBIDDEN);
                     }
-                    eventRequestStatusUpdateResult.getRejectedRequests().add(requestMapperMapStruct.inParticipationRequestDtoFromParticipationRequest(participationRequest));
                     participationRequest.setStatus(RequestStatus.REJECTED);
+                    eventRequestStatusUpdateResult.getRejectedRequests().add(requestMapperMapStruct.inParticipationRequestDtoFromParticipationRequest(participationRequest));
                     forSave.add(participationRequest);
                 }
             }

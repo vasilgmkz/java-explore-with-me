@@ -2,6 +2,7 @@ package ru.practicum;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.exceptions.BadRequest;
 import ru.practicum.mappers.StatsMapperMapStruct;
 import ru.practicum.model.EndpointHit;
 import ru.practicum.model.EndpointHitShort;
@@ -23,6 +24,9 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<StatInConsoleDto> getStats(LocalDateTime startDateTime, LocalDateTime endDateTime, List<String> uris, boolean unique) {
+        if (startDateTime == null || endDateTime == null || startDateTime.isAfter(endDateTime)) {
+            throw new BadRequest("Error validating start or end dates");
+        }
         if (uris == null || uris.isEmpty()) {
             List<EndpointHitShort> endpointHitsShort;
             if (!unique) {

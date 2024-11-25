@@ -69,6 +69,10 @@ public class AdminEventsService implements AdminService {
         if (states == null) {
             states = new ArrayList<>();
         }
+        if (rangeStart == null || rangeEnd == null) {
+            rangeStart = LocalDateTime.now().minusYears(1000);
+            rangeEnd = LocalDateTime.now().plusYears(1000);
+        }
         List<EventDto> eventDtos = adminEventsRepository.getEventsAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
         if (eventDtos.isEmpty()) {
             return new ArrayList<>();

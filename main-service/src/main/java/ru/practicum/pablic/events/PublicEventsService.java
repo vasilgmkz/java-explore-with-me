@@ -5,9 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.practicum.StatFromConsoleDto;
 import ru.practicum.StatsClient;
 import ru.practicum.converter.Converter;
-import ru.practicum.exeption.EditingConditionsException;
+import ru.practicum.exeption.BadRequest;
 import ru.practicum.exeption.NotFoundException;
-import ru.practicum.exeption.Status;
 import ru.practicum.pablic.PublicService;
 import ru.practicum.privates.events.dto.EventFullDto;
 import ru.practicum.privates.events.dto.EventShortDto;
@@ -38,6 +37,9 @@ public class PublicEventsService implements PublicService {
         if (rangeStart == null || rangeEnd == null) {
             rangeStart = LocalDateTime.now();
             rangeEnd = LocalDateTime.now().plusYears(100);
+        }
+        if (!rangeEnd.isAfter(rangeStart)) {
+            throw new BadRequest("Start date is later than end date");
         }
         List<EventDto> eventDtoList = publicEventsRepository.getEvents(text, categories, paid, rangeStart, rangeEnd, from, size);
         statFromConsoleDto(ip, uri);
@@ -79,7 +81,7 @@ public class PublicEventsService implements PublicService {
         EventDto eventDto = publicEventsRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Event with id=%d was not found", id)));
         if (!eventDto.getState().equals(State.PUBLISHED)) {
-            throw new EditingConditionsException("The event must have the state: PUBLISHED", Status.FORBIDDEN);
+            throw new NotFoundException("The event must have the state: PUBLISHED");
         }
         EventFullDto eventFullDto = eventMapperMapStruct.inEventFullDtoFromEventDto(eventDto);
         statFromConsoleDto(ip, uri);

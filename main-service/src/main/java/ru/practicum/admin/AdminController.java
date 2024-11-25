@@ -100,7 +100,8 @@ public class AdminController {
 
     @PostMapping("/compilations")
     @ResponseStatus(HttpStatus.CREATED)
-    public CompilationDto addCompilation(@RequestBody @Validated({Marker.AddCompilation.class, Marker.UpdateCompilation.class}) CompilationDtoFromConsole compilationDtoFromConsole) {
+    @Validated(value = {Marker.AddCompilation.class})
+    public CompilationDto addCompilation(@RequestBody @Valid CompilationDtoFromConsole compilationDtoFromConsole) {
         return adminCompilationsService.addCompilation(compilationDtoFromConsole);
     }
 
@@ -112,7 +113,7 @@ public class AdminController {
 
     @PatchMapping("/compilations/{compId}")
     @ResponseStatus(HttpStatus.OK)
-    public CompilationDto updateCompilation(@PathVariable("compId") @Valid @Positive Long compId, @RequestBody @Validated({Marker.UpdateCompilation.class}) CompilationDtoFromConsole compilationDtoFromConsole) {
+    public CompilationDto updateCompilation(@PathVariable("compId") @Valid @Positive Long compId, @RequestBody @Valid CompilationDtoFromConsole compilationDtoFromConsole) {
         return adminCompilationsService.updateCompilation(compilationDtoFromConsole, compId);
     }
 
