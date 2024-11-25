@@ -1,13 +1,14 @@
 package ru.practicum;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class MainApplication {
     public static void main(String[] args) {
+        SpringApplication.run(MainApplication.class, args);
         // Проверка связи основного приложения и сервиса статистики
-//        ConfigurableApplicationContext context = SpringApplication.run(MainApplication.class);
-//        StatsClient statsClient = context.getBean(StatsClient.class);
+//        StatsClient statsClient = new StatsClientImpl("http://localhost:9090");
 //        StatFromConsoleDto statFromConsoleDto = new StatFromConsoleDto();
 //        statFromConsoleDto.setApp("App");
 //        statFromConsoleDto.setIp("Ip");
@@ -30,6 +31,5 @@ public class MainApplication {
 //                System.out.println(get);
 //            }
 //        } while (!text.equals("exit"));
-//    }
     }
 }

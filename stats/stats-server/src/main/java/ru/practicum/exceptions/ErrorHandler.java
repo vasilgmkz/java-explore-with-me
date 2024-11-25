@@ -20,6 +20,13 @@ public class ErrorHandler {
         return new ErrorResponse(e.getBindingResult().getAllErrors().getFirst().getDefaultMessage());
     }
 
+    @ExceptionHandler(value = {BadRequest.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse defaultHandlerExceptionResolver(Exception e) {
+        log.info("400 {}", e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleException(final Exception e, HttpStatus status) {
