@@ -3,6 +3,7 @@ package ru.practicum;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,11 +24,10 @@ import java.util.stream.Collectors;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Component
+@Slf4j
 public class StatsClientImpl implements StatsClient {
-    private static final Logger log = LoggerFactory.getLogger(StatsClientImpl.class);
     final RestClient restClient;
     final String statUrl;
-
 
     public StatsClientImpl(@Value("${client.url}") String statUrl) {
         this.restClient = RestClient.create();
@@ -64,6 +64,7 @@ public class StatsClientImpl implements StatsClient {
                 .buildAndExpand(startString, endString, urisString, unique);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
+            log.info("uriComponents: {}", uriComponents.toUriString());
             return restClient.get()
                     .uri(uriComponents.toUriString())
                     .exchange((request, response) -> {
@@ -76,10 +77,12 @@ public class StatsClientImpl implements StatsClient {
                                 throw new ResourceAccessException("ErrorStatServer");
                             }
                         } catch (ResourceAccessException e) {
+                            log.info("logResourceAccessException1: {}", e.getMessage());
                             return new ArrayList<>();
                         }
                     });
         } catch (ResourceAccessException e) {
+            log.info("logResourceAccessException2: {}", e.getMessage());
             return new ArrayList<>();
         }
     }

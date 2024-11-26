@@ -40,7 +40,7 @@ public class Converter {
         // Добавление количества просмотров
         List<String> eventFullDtosId = eventFullDtos.stream().map(EventFullDto::getId).map(Object::toString).map(x -> "/events/" + x).toList();
         log.info("eventFullDtosId: {}", eventFullDtosId);
-        List<StatInConsoleDto> statInConsoleDtosList = statsClient.getStats(LocalDateTime.now().minusYears(100), LocalDateTime.now().plusYears(100), eventFullDtosId, true);
+        List<StatInConsoleDto> statInConsoleDtosList = statsClient.getStats(LocalDateTime.now().minusYears(1000), LocalDateTime.now().plusYears(1000), eventFullDtosId, true);
         log.info("statInConsoleDtosList: {}", statInConsoleDtosList);
         Map<Integer, Integer> statInConsoleDtosMap = new HashMap<>();
         for (StatInConsoleDto statInConsoleDto : statInConsoleDtosList) {
