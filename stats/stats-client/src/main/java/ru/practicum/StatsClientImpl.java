@@ -50,8 +50,6 @@ public class StatsClientImpl implements StatsClient {
         String endString = end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         String urisString = uris.stream().collect(Collectors.joining(","));
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
-                .scheme("http")
-                .host("localhost:9090")
                 .path("/stats")
                 .query("start={keyword}")
                 .query("end={keyword}")
@@ -60,7 +58,7 @@ public class StatsClientImpl implements StatsClient {
                 .buildAndExpand(startString, endString, urisString, unique);
         try {
             log.info("uriComponents: {}", uriComponents.toUriString());
-            return restClient.get().uri(uriComponents.toUriString()).retrieve()
+            return restClient.get().uri(statUrl + uriComponents.toUriString()).retrieve()
                     .body(new ParameterizedTypeReference<>() {
                     });
 //            return restClient.get()
