@@ -1,6 +1,7 @@
 package ru.practicum.converter;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.practicum.StatInConsoleDto;
 import ru.practicum.StatsClient;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class Converter {
     private final PrivateRequestsRepository privateRequestsRepository;
     private final StatsClient statsClient;
@@ -44,6 +46,7 @@ public class Converter {
             Integer numberInteger = Integer.parseInt(numberString);
             statInConsoleDtosMap.put(numberInteger, statInConsoleDto.getHits());
         }
+        log.info("Map uri: {}", statInConsoleDtosMap);
         for (EventFullDto eventFullDto : eventFullDtos) {
             eventFullDto.setViews(statInConsoleDtosMap.getOrDefault(eventFullDto.getId(), 0));
         }
