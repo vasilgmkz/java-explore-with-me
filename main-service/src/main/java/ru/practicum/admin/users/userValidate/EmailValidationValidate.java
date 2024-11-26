@@ -11,7 +11,7 @@ public class EmailValidationValidate implements ConstraintValidator<EmailValidat
             return true;
         }
         int lengthEmail = email.substring(0, email.indexOf('@')).length();
-        int lengthDomain = email.substring(email.indexOf('@')).length() - 1;
+        int lengthDomain = email.substring(email.indexOf('@'), email.indexOf(".")).length() - 1;
         if (lengthEmail <= 64 && lengthDomain <= 63) {
             return true;
         } else {
