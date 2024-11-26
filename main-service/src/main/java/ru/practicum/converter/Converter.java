@@ -99,6 +99,9 @@ public class Converter {
         for (CompilationDto compilationDto : compilationDtoList) {
             eventShortDtosId.addAll(compilationDto.getEvents().stream().map(EventShortDto::getId).map(Object::toString).map(x -> "/events/" + x).toList());
         }
+        if (eventShortDtosId.isEmpty()) {
+            return compilationDtoList;
+        }
         List<StatInConsoleDto> statInConsoleDtosList = statsClient.getStats(LocalDateTime.now().minusYears(100), LocalDateTime.now().plusYears(100), eventShortDtosId, false);
         Map<Integer, Integer> statInConsoleDtosMap = new HashMap<>();
         for (StatInConsoleDto statInConsoleDto : statInConsoleDtosList) {

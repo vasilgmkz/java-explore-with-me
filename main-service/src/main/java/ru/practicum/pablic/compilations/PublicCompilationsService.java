@@ -9,6 +9,7 @@ import ru.practicum.converter.Converter;
 import ru.practicum.exeption.NotFoundException;
 import ru.practicum.pablic.PublicService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("publicCompilationsService")
@@ -21,6 +22,9 @@ public class PublicCompilationsService implements PublicService {
     @Override
     public List<CompilationDto> getCompilations(Long from, Long size, Boolean pinned) {
         List<Compilation> compilationList = publicCompilationsRepository.getCompilations(from, size, pinned);
+        if (compilationList.isEmpty()) {
+            return new ArrayList<>();
+        }
         List<CompilationDto> compilationDtoList = compilationList.stream().map(compilationsMapperMapStruct::inCompilationDtoFromCompilation).toList();
         return converter.addConfirmedRequestsAndViewsInCompilationDtoList(compilationDtoList);
     }
