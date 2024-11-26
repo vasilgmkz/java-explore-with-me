@@ -1,11 +1,10 @@
 package ru.practicum;
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
@@ -63,22 +62,25 @@ public class StatsClientImpl implements StatsClient {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             log.info("uriComponents: {}", uriComponents.toUriString());
-            return restClient.get()
-                    .uri(uriComponents.toUriString())
-                    .exchange((request, response) -> {
-                        try {
-                            if (response.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(200))) {
-                                return objectMapper.readValue(response.getBody(), new TypeReference<>() {
-                                });
-                            } else {
-                                log.warn("ErrorStatServer");
-                                throw new ResourceAccessException("ErrorStatServer");
-                            }
-                        } catch (ResourceAccessException e) {
-                            log.info("logResourceAccessException1: {}", e.getMessage());
-                            return new ArrayList<>();
-                        }
+            return restClient.get().uri(uriComponents.toUriString()).retrieve()
+                    .body(new ParameterizedTypeReference<>() {
                     });
+//            return restClient.get()
+//                    .uri(uriComponents.toUriString())
+//                    .exchange((request, response) -> {
+//                        try {
+//                            if (response.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(200))) {
+//                                return objectMapper.readValue(response.getBody(), new TypeReference<>() {
+//                                });
+//                            } else {
+//                                log.warn("ErrorStatServer");
+//                                throw new ResourceAccessException("ErrorStatServer");
+//                            }
+//                        } catch (ResourceAccessException e) {
+//                            log.info("logResourceAccessException1: {}", e.getMessage());
+//                            return new ArrayList<>();
+//                        }
+//                    });
         } catch (ResourceAccessException e) {
             log.info("logResourceAccessException2: {}", e.getMessage());
             return new ArrayList<>();
