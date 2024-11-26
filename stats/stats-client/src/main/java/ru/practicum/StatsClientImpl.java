@@ -1,7 +1,6 @@
 package ru.practicum;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -59,7 +58,6 @@ public class StatsClientImpl implements StatsClient {
                 .query("uris={keyword}")
                 .query("unique={keyword}")
                 .buildAndExpand(startString, endString, urisString, unique);
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
             log.info("uriComponents: {}", uriComponents.toUriString());
             return restClient.get().uri(uriComponents.toUriString()).retrieve()
