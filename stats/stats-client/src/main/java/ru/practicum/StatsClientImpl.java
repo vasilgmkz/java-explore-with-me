@@ -61,22 +61,6 @@ public class StatsClientImpl implements StatsClient {
             return restClient.get().uri(statUrl + uriComponents.toUriString()).retrieve()
                     .body(new ParameterizedTypeReference<>() {
                     });
-//            return restClient.get()
-//                    .uri(uriComponents.toUriString())
-//                    .exchange((request, response) -> {
-//                        try {
-//                            if (response.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(200))) {
-//                                return objectMapper.readValue(response.getBody(), new TypeReference<>() {
-//                                });
-//                            } else {
-//                                log.warn("ErrorStatServer");
-//                                throw new ResourceAccessException("ErrorStatServer");
-//                            }
-//                        } catch (ResourceAccessException e) {
-//                            log.info("logResourceAccessException1: {}", e.getMessage());
-//                            return new ArrayList<>();
-//                        }
-//                    });
         } catch (ResourceAccessException e) {
             log.info("logResourceAccessException2: {}", e.getMessage());
             return new ArrayList<>();
