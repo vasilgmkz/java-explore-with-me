@@ -21,7 +21,8 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public void addHit(StatFromConsoleDto statFromConsoleDto) {
         EndpointHit endpointHit = statsMapperMapStruct.inEndpointHit(statFromConsoleDto);
-        statsRepositoryJpa.save(endpointHit);
+        Integer id = statsRepositoryJpa.save(endpointHit).getId();
+        log.info("id сохраненного uri: {}", id);
     }
 
     @Override
