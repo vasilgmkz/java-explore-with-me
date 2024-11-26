@@ -1,6 +1,7 @@
 package ru.practicum.pablic.events;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.StatFromConsoleDto;
 import ru.practicum.StatsClient;
@@ -19,6 +20,7 @@ import java.util.*;
 
 @Service("publicEventsService")
 @RequiredArgsConstructor
+@Slf4j
 public class PublicEventsService implements PublicService {
     private final PublicEventsRepository publicEventsRepository;
     private final EventMapperMapStruct eventMapperMapStruct;
@@ -94,6 +96,7 @@ public class PublicEventsService implements PublicService {
         statFromConsoleDto.setIp(ip);
         statFromConsoleDto.setUri(uri);
         statFromConsoleDto.setTimestamp(LocalDateTime.now());
+        log.info("Запрос на сохранение: {} + {}", uri, ip);
         statsClient.addHit(statFromConsoleDto);
     }
 }
