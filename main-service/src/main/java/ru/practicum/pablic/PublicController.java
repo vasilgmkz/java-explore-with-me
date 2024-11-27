@@ -38,12 +38,14 @@ public class PublicController {
     @GetMapping("/categories")
     @ResponseStatus(HttpStatus.OK)
     public List<CategoryDto> getCategories(@RequestParam(name = "from", defaultValue = "0") @PositiveOrZero Long from, @RequestParam(name = "size", defaultValue = "10") @PositiveOrZero Long size) {
+        log.info("Публичный запрос на получение категорий");
         return publicCategoriesService.getCategories(from, size);
     }
 
     @GetMapping("/categories/{catId}")
     @ResponseStatus(HttpStatus.OK)
     public CategoryDto getCategoryId(@PathVariable("catId") Long catId) {
+        log.info("Публичный запрос на получение категории по id");
         return publicCategoriesService.getCategoryId(catId);
     }
 
@@ -52,12 +54,14 @@ public class PublicController {
     public List<CompilationDto> getCompilations(@RequestParam(name = "from", defaultValue = "0") @Valid @PositiveOrZero Long from,
                                                 @RequestParam(name = "size", defaultValue = "10") @Valid @PositiveOrZero Long size,
                                                 @RequestParam(name = "pinned", required = false) Boolean pinned) {
+        log.info("Публичный запрос на получение подборок");
         return publicCompilationsService.getCompilations(from, size, pinned);
     }
 
     @GetMapping("/compilations/{compId}")
     @ResponseStatus(HttpStatus.OK)
     public CompilationDto getCompilationById(@PathVariable("compId") @Valid @Positive Long compId) {
+        log.info("Публичный запрос на получение подборки по id");
         return publicCompilationsService.getCompilationById(compId);
     }
 
@@ -73,6 +77,7 @@ public class PublicController {
                                          @RequestParam(name = "from", defaultValue = "0") @Valid @PositiveOrZero Long from,
                                          @RequestParam(name = "size", defaultValue = "10") @Valid @PositiveOrZero Long size,
                                          HttpServletRequest request) {
+        log.info("Публичный запрос на получение событий");
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}", request.getRequestURI());
         return publicEventsService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request.getRemoteAddr(), request.getRequestURI());
@@ -81,6 +86,7 @@ public class PublicController {
     @GetMapping("/events/{id}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto getEventsById(@PathVariable("id") @Valid @Positive Long id, HttpServletRequest request) {
+        log.info("Публичный запрос на получение события по id");
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}", request.getRequestURI());
         return publicEventsService.getEventsById(id, request.getRemoteAddr(), request.getRequestURI());

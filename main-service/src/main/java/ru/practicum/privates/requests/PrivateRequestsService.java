@@ -149,7 +149,7 @@ public class PrivateRequestsService implements PrivateService {
             }
             default -> throw new EditingConditionsException("States can be CONFIRMED or REJECTED", Status.FORBIDDEN);
         }
-        for (ParticipationRequest participationRequest: forSave) {
+        for (ParticipationRequest participationRequest : forSave) {
             privateRequestsRepository.save(participationRequest);
         }
         return eventRequestStatusUpdateResult;

@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping(path = "/admin")
 @Validated
+@Slf4j
 public class AdminController {
 
     @Qualifier("adminCategoriesService")
@@ -44,24 +46,29 @@ public class AdminController {
     @PostMapping("/categories")
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryDto addCategory(@RequestBody @Valid NewCategoryDto newCategoryDto) {
+        log.info("Запрос на создание категории");
         return adminCategoriesService.addCategory(newCategoryDto);
     }
 
     @DeleteMapping("/categories/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable("catId") Long catId) {
+        log.info("Запрос на удаление категории");
         adminCategoriesService.deleteCategory(catId);
     }
 
     @PatchMapping("/categories/{catId}")
     @ResponseStatus(HttpStatus.OK)
     public CategoryDto updateCategory(@RequestBody @Valid NewCategoryDto newCategoryDto, @PathVariable("catId") Long catId) {
+        log.info("Запрос на изменение категории администратором");
         return adminCategoriesService.updateCategory(newCategoryDto, catId);
     }
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
+
     public UserDto addUser(@RequestBody @Valid UserShortDtoFromConsole userShortDtoFromConsole) {
+        log.info("Запрос на создание пользователя администратором");
         return adminUsersService.addUser(userShortDtoFromConsole);
     }
 
@@ -70,12 +77,14 @@ public class AdminController {
     public List<UserDto> getUsers(@RequestParam(required = false, name = "ids") List<Integer> ids,
                                   @RequestParam(name = "from", defaultValue = "0") @PositiveOrZero Long from,
                                   @RequestParam(name = "size", defaultValue = "10") @PositiveOrZero Long size) {
+        log.info("Запрос на получение пользователей администратором");
         return adminUsersService.getUsers(ids, from, size);
     }
 
     @DeleteMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable("userId") Long userId) {
+        log.info("Запрос на удаление пользователя администратором");
         adminUsersService.deleteUser(userId);
     }
 
@@ -83,6 +92,7 @@ public class AdminController {
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto updateEventUser(@RequestBody @Valid UpdateEventAdminRequest updateEventAdminRequest,
                                         @PathVariable("eventId") @Valid @Positive Long eventId) {
+        log.info("Запрос на изменение пользователя администратором");
         return adminEventsService.updateEvent(updateEventAdminRequest, eventId);
     }
 
@@ -95,6 +105,7 @@ public class AdminController {
                                         @RequestParam(required = false, name = "rangeEnd") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                         @RequestParam(name = "from", defaultValue = "0") Integer from,
                                         @RequestParam(name = "size", defaultValue = "10") Integer size) {
+        log.info("Запрос на получение списка событий администратором");
         return adminEventsService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
@@ -102,18 +113,21 @@ public class AdminController {
     @ResponseStatus(HttpStatus.CREATED)
     @Validated(value = {Marker.AddCompilation.class})
     public CompilationDto addCompilation(@RequestBody @Valid CompilationDtoFromConsole compilationDtoFromConsole) {
+        log.info("Запрос на добавление подборки администратором");
         return adminCompilationsService.addCompilation(compilationDtoFromConsole);
     }
 
     @DeleteMapping("/compilations/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCompilation(@PathVariable("compId") @Valid @Positive Long compId) {
+        log.info("Запрос на удаление подборки администратором");
         adminCompilationsService.deleteCompilation(compId);
     }
 
     @PatchMapping("/compilations/{compId}")
     @ResponseStatus(HttpStatus.OK)
     public CompilationDto updateCompilation(@PathVariable("compId") @Valid @Positive Long compId, @RequestBody @Valid CompilationDtoFromConsole compilationDtoFromConsole) {
+        log.info("Запрос на изменение подборки администратором");
         return adminCompilationsService.updateCompilation(compilationDtoFromConsole, compId);
     }
 
