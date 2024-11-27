@@ -1,12 +1,9 @@
 package ru.practicum;
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
@@ -23,11 +20,10 @@ import java.util.stream.Collectors;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Component
+@Slf4j
 public class StatsClientImpl implements StatsClient {
-    private static final Logger log = LoggerFactory.getLogger(StatsClientImpl.class);
     final RestClient restClient;
     final String statUrl;
-
 
     public StatsClientImpl(@Value("${client.url}") String statUrl) {
         this.restClient = RestClient.create();
@@ -54,32 +50,19 @@ public class StatsClientImpl implements StatsClient {
         String endString = end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         String urisString = uris.stream().collect(Collectors.joining(","));
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
-                .scheme("http")
-                .host("localhost:9090")
                 .path("/stats")
                 .query("start={keyword}")
                 .query("end={keyword}")
                 .query("uris={keyword}")
                 .query("unique={keyword}")
                 .buildAndExpand(startString, endString, urisString, unique);
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return restClient.get()
-                    .uri(uriComponents.toUriString())
-                    .exchange((request, response) -> {
-                        try {
-                            if (response.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(200))) {
-                                return objectMapper.readValue(response.getBody(), new TypeReference<>() {
-                                });
-                            } else {
-                                log.warn("ErrorStatServer");
-                                throw new ResourceAccessException("ErrorStatServer");
-                            }
-                        } catch (ResourceAccessException e) {
-                            return new ArrayList<>();
-                        }
+            log.info("uriComponents: {}", uriComponents.toUriString());
+            return restClient.get().uri(statUrl + uriComponents.toUriString()).retrieve()
+                    .body(new ParameterizedTypeReference<>() {
                     });
         } catch (ResourceAccessException e) {
+            log.info("logResourceAccessException2: {}", e.getMessage());
             return new ArrayList<>();
         }
     }
