@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.StatFromConsoleDto;
 import ru.practicum.StatsClient;
+import ru.practicum.admin.locations.AdminLocationsRepository;
+import ru.practicum.admin.locations.model.Location;
 import ru.practicum.converter.Converter;
 import ru.practicum.exeption.BadRequest;
 import ru.practicum.exeption.NotFoundException;
@@ -14,7 +16,6 @@ import ru.practicum.privates.events.dto.EventShortDto;
 import ru.practicum.privates.events.mapper.EventMapperMapStruct;
 import ru.practicum.privates.events.model.EventDto;
 import ru.practicum.privates.events.model.State;
-
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -26,13 +27,14 @@ public class PublicEventsService implements PublicService {
     private final EventMapperMapStruct eventMapperMapStruct;
     private final Converter converter;
     private final StatsClient statsClient;
+    private final AdminLocationsRepository adminLocationsRepository;
 
     @Override
     public List<EventShortDto> getEvents(String text, List<Integer> categories,
                                          Boolean paid, LocalDateTime rangeStart,
                                          LocalDateTime rangeEnd, Boolean onlyAvailable,
                                          String sort, Long from,
-                                         Long size, String ip, String uri) {
+                                         Long size, String ip, String uri, String locationName) {
         if (categories == null || categories.size() == 1 && categories.getFirst().equals(0)) {
             categories = new ArrayList<>();
         }
@@ -43,7 +45,14 @@ public class PublicEventsService implements PublicService {
         if (!rangeEnd.isAfter(rangeStart)) {
             throw new BadRequest("Start date is later than end date");
         }
-        List<EventDto> eventDtoList = publicEventsRepository.getEvents(text, categories, paid, rangeStart, rangeEnd, from, size);
+        List<EventDto> eventDtoList;
+        if (locationName != null) {
+            Location location = adminLocationsRepository.gettingLocationByName(locationName)
+                    .orElseThrow(() -> new NotFoundException(String.format("Location with name=%s was not found", locationName)));
+            eventDtoList = publicEventsRepository.getEventsWithLocation(text, categories, paid, rangeStart, rangeEnd, from, size, location.getLat(), location.getLon(), location.getRadius());
+        } else {
+            eventDtoList = publicEventsRepository.getEvents(text, categories, paid, rangeStart, rangeEnd, from, size);
+        }
         statFromConsoleDto(ip, uri);
         if (eventDtoList.isEmpty()) {
             return new ArrayList<>();

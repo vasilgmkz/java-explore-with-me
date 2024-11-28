@@ -3,6 +3,8 @@ package ru.practicum.admin.events;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.admin.AdminService;
+import ru.practicum.admin.locations.AdminLocationsRepository;
+import ru.practicum.admin.locations.model.Location;
 import ru.practicum.converter.Converter;
 import ru.practicum.exeption.BadRequest;
 import ru.practicum.exeption.EditingConditionsException;
@@ -27,6 +29,7 @@ public class AdminEventsService implements AdminService {
     private final AdminEventsRepository adminEventsRepository;
     private final PrivateRequestsRepository privateRequestsRepository;
     private final Converter converter;
+    private final AdminLocationsRepository adminLocationsRepository;
 
     @Override
     public EventFullDto updateEvent(UpdateEventAdminRequest updateEventAdminRequest, Long eventId) {
@@ -59,7 +62,9 @@ public class AdminEventsService implements AdminService {
     }
 
     @Override
-    public List<EventFullDto> getEvents(List<Integer> users, List<String> states, List<Integer> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
+    public List<EventFullDto> getEvents(List<Integer> users, List<String> states,
+                                        List<Integer> categories, LocalDateTime rangeStart,
+                                        LocalDateTime rangeEnd, Integer from, Integer size, String locationName) {
         if (users == null || users.size() == 1 && users.getFirst().equals(0)) {
             users = new ArrayList<>();
         }
@@ -73,7 +78,15 @@ public class AdminEventsService implements AdminService {
             rangeStart = LocalDateTime.now().minusYears(1000);
             rangeEnd = LocalDateTime.now().plusYears(1000);
         }
-        List<EventDto> eventDtos = adminEventsRepository.getEventsAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
+
+        List<EventDto> eventDtos;
+        if (locationName != null) {
+            Location location = adminLocationsRepository.gettingLocationByName(locationName)
+                    .orElseThrow(() -> new NotFoundException(String.format("Location with name=%s was not found", locationName)));
+            eventDtos = adminEventsRepository.getEventsAdminWithLocation(users, states, categories, rangeStart, rangeEnd, from, size, location.getLat(), location.getLon(), location.getRadius());
+        } else {
+            eventDtos = adminEventsRepository.getEventsAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
+        }
         if (eventDtos.isEmpty()) {
             return new ArrayList<>();
         }

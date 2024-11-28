@@ -110,9 +110,10 @@ public class AdminController {
                                         @RequestParam(required = false, name = "rangeStart") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                                         @RequestParam(required = false, name = "rangeEnd") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                         @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                        @RequestParam(name = "size", defaultValue = "10") Integer size) {
+                                        @RequestParam(name = "size", defaultValue = "10") Integer size,
+                                        @RequestParam(required = false, name = "location") String locationName) {
         log.info("Запрос на получение списка событий администратором");
-        return adminEventsService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
+        return adminEventsService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size, locationName);
     }
 
     @PostMapping("/compilations")
