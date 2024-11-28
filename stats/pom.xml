@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>stats</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -17,6 +18,14 @@
         <module>stats-dto</module>
         <module>stats-server</module>
     </modules>
+
+    <dependencies>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <scope>provided</scope>
+            </dependency>
+    </dependencies>
 
     <properties>
         <maven.compiler.source>22</maven.compiler.source>
