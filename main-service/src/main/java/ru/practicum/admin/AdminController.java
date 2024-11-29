@@ -16,6 +16,9 @@ import ru.practicum.admin.categories.model.CategoryDto;
 import ru.practicum.admin.compilations.dto.CompilationDto;
 import ru.practicum.admin.compilations.dto.CompilationDtoFromConsole;
 import ru.practicum.admin.compilations.validate.Marker;
+import ru.practicum.admin.locations.dto.LocationFromConsole;
+import ru.practicum.admin.locations.dto.LocationInConsole;
+import ru.practicum.admin.locations.validation.MarkerLocations;
 import ru.practicum.admin.users.dto.UserShortDtoFromConsole;
 import ru.practicum.admin.users.model.UserDto;
 import ru.practicum.privates.events.dto.EventFullDto;
@@ -42,6 +45,9 @@ public class AdminController {
 
     @Qualifier("adminCompilationsService")
     private final AdminService adminCompilationsService;
+
+    @Qualifier("adminLocationsService")
+    private final AdminService adminLocationsService;
 
     @PostMapping("/categories")
     @ResponseStatus(HttpStatus.CREATED)
@@ -104,9 +110,10 @@ public class AdminController {
                                         @RequestParam(required = false, name = "rangeStart") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
                                         @RequestParam(required = false, name = "rangeEnd") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                         @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                        @RequestParam(name = "size", defaultValue = "10") Integer size) {
+                                        @RequestParam(name = "size", defaultValue = "10") Integer size,
+                                        @RequestParam(required = false, name = "location") String locationName) {
         log.info("Запрос на получение списка событий администратором");
-        return adminEventsService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
+        return adminEventsService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size, locationName);
     }
 
     @PostMapping("/compilations")
@@ -131,5 +138,40 @@ public class AdminController {
         return adminCompilationsService.updateCompilation(compilationDtoFromConsole, compId);
     }
 
+    @PostMapping("/locations")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Validated(value = MarkerLocations.AddLocation.class)
+    public LocationInConsole addLocation(@RequestBody @Valid LocationFromConsole locationFromConsole) {
+        log.info("Запрос на создание локации");
+        return adminLocationsService.addLocation(locationFromConsole);
+    }
+
+    @PatchMapping("/locations/{locationId}")
+    @ResponseStatus(HttpStatus.OK)
+    public LocationInConsole updateLocation(@RequestBody @Valid LocationFromConsole locationFromConsole, @PathVariable("locationId") @Valid @Positive Long locationId) {
+        log.info("Запрос на изменение локации");
+        return adminLocationsService.updateLocation(locationFromConsole, locationId);
+    }
+
+    @DeleteMapping("/locations/{locationId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteLocation(@PathVariable("locationId") @Valid @Positive Long locationId) {
+        log.info("Запрос на удаление локации");
+        adminLocationsService.deleteLocation(locationId);
+    }
+
+    @GetMapping("/locations/{locationId}")
+    @ResponseStatus(HttpStatus.OK)
+    public LocationInConsole getLocation(@PathVariable("locationId") @Valid @Positive Long locationId) {
+        log.info("Запрос на получение локации");
+        return adminLocationsService.getLocation(locationId);
+    }
+
+    @GetMapping("/locations")
+    @ResponseStatus(HttpStatus.OK)
+    public List<LocationInConsole> getLocations() {
+        log.info("Запрос на получение всех локаций");
+        return adminLocationsService.getLocations();
+    }
 }
 

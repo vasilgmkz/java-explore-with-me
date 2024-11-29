@@ -76,11 +76,14 @@ public class PublicController {
                                          @RequestParam(required = false, name = "sort") String sort,
                                          @RequestParam(name = "from", defaultValue = "0") @Valid @PositiveOrZero Long from,
                                          @RequestParam(name = "size", defaultValue = "10") @Valid @PositiveOrZero Long size,
+                                         @RequestParam(required = false, name = "location") String locationName,
                                          HttpServletRequest request) {
         log.info("Публичный запрос на получение событий");
         log.info("client ip: {}", request.getRemoteAddr());
         log.info("endpoint path: {}", request.getRequestURI());
-        return publicEventsService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request.getRemoteAddr(), request.getRequestURI());
+        return publicEventsService.getEvents(text, categories, paid,
+                rangeStart, rangeEnd, onlyAvailable,
+                sort, from, size, request.getRemoteAddr(), request.getRequestURI(), locationName);
     }
 
     @GetMapping("/events/{id}")
